@@ -17,7 +17,7 @@ TEST_CASE( "DynamicArray with initial capacity", "[DynamicArray]" ) {
   REQUIRE(arr.Empty());
 }
 
-TEST_CASE( "DynamicArray push 10 elements back", "[DynamicArray]" ) {
+TEST_CASE( "DynamicArray push back 10 elements back", "[DynamicArray]" ) {
   DynamicArray<int> arr(0);
 
   for (unsigned i = 0; i < 10; ++i)
@@ -27,7 +27,7 @@ TEST_CASE( "DynamicArray push 10 elements back", "[DynamicArray]" ) {
   REQUIRE(arr.Capacity() == 16);
 }
 
-TEST_CASE( "DynamicArray pop 10 elements", "[DynamicArray]" ) {
+TEST_CASE( "DynamicArray pop back 10 elements", "[DynamicArray]" ) {
   DynamicArray<int> arr;
 
   for (unsigned i = 0; i < 10; ++i)
@@ -230,4 +230,26 @@ TEST_CASE( "DynamicArray append element", "[DynamicArray]" ) {
   arr += 1;
   REQUIRE(arr.Size() == 1);
   REQUIRE(arr.Back() == 1);
+}
+
+TEST_CASE( "DynamicArray push front 10 elements back", "[DynamicArray]" ) {
+  DynamicArray<int> arr(0);
+
+  for (unsigned i = 0; i < 10; ++i)
+    arr.PushFront(i);
+  REQUIRE(arr.Front() == 9);
+  REQUIRE(arr.Size() == 10);
+  REQUIRE(arr.Capacity() == 16);
+}
+
+TEST_CASE( "DynamicArray pop front 10 elements", "[DynamicArray]" ) {
+  DynamicArray<int> arr;
+
+  for (unsigned i = 0; i < 10; ++i)
+    arr.PushBack(i);
+
+  for (unsigned i = 0; i < 10; ++i)
+    arr.PopFront();
+  REQUIRE(arr.Size() == 0);
+  REQUIRE(arr.Capacity() == 16);
 }

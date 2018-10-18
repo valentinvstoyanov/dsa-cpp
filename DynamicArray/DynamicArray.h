@@ -14,7 +14,7 @@ class DynamicArray {
   size_t size_;
   size_t capacity_;
 
-  void Copy(T* src, T* dest, size_t size) const;
+  void Copy(T* dest, T* src, size_t size) const;
  public:
   explicit DynamicArray(size_t = 1);
   DynamicArray(const DynamicArray&);
@@ -52,6 +52,9 @@ class DynamicArray {
 
   void PushBack(const T&);
   void PopBack();
+
+  void PushFront(const T&);
+  void PopFront();
 };
 
 template<typename T>
@@ -223,6 +226,23 @@ void DynamicArray<T>::PopBack() {
 }
 
 template<typename T>
+void DynamicArray<T>::PushFront(const T& val) {
+  if (size_ == capacity_)
+    Resize(size_ == 0 ? 1 : size_ * 2);
+  Copy(buffer_ + 1, buffer_, size_);
+  buffer_[0] = val;
+  ++size_;
+}
+
+template<typename T>
+void DynamicArray<T>::PopFront() {
+  assert(size_ > 0 && "Pop method called on empty array");
+  for (size_t i = 0; i < size_ - 1; --i)
+    buffer_[i] = buffer_[i + 1];
+  --size_;
+}
+
+template<typename T>
 void DynamicArray<T>::Copy(T* dest, T* src, size_t size) const {
   if (src == nullptr || dest == nullptr) return;
   for (size_t i = 0; i < size; ++i)
@@ -257,8 +277,8 @@ DynamicArray<T>& DynamicArray<T>::operator+=(const DynamicArray<T>& other) {
 }
 
 template<typename T>
-DynamicArray<T>& DynamicArray<T>::operator+=(const T& other) {
-  PushBack(other);
+DynamicArray<T>& DynamicArray<T>::operator+=(const T& val) {
+  PushBack(val);
   return *this;
 }
 
