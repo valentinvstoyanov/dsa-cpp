@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "lib/catch.hpp"
-#include "LinkedList.h"
+#include "linked_list.h"
 
 TEST_CASE( "LinkedList can be created", "[LinkedList]" ) {
   LinkedList<int> list;

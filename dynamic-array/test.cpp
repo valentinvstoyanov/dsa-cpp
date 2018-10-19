@@ -1,7 +1,7 @@
 #include <iostream>
 #define CATCH_CONFIG_MAIN
 #include "lib/catch.hpp"
-#include "DynamicArray.h"
+#include "dynamic_array.h"
 
 TEST_CASE( "DynamicArray with default ctor", "[DynamicArray]" ) {
   DynamicArray<int> arr;
