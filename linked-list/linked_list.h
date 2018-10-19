@@ -6,7 +6,7 @@
 #define LINKEDLIST_LINKEDLIST_H
 
 #include <cstddef>
-template <typename T>
+template<typename T>
 class LinkedList {
   struct Node {
     T val_;

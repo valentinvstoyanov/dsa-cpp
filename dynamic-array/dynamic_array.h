@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <cassert>
 
-template <typename T>
+template<typename T>
 class DynamicArray {
   T* buffer_;
   size_t size_;
@@ -25,7 +25,7 @@ class DynamicArray {
   bool operator!=(const DynamicArray<T>& other) const;
 
   DynamicArray<T>& operator+=(const DynamicArray<T>& other);
-  DynamicArray<T>& operator+=(const T& other);
+  DynamicArray<T>& operator+=(const T& val);
 
   void Clear();
 
@@ -38,8 +38,8 @@ class DynamicArray {
   size_t Size() const;
   size_t Capacity() const;
 
-  T& operator[] (size_t);
-  const T& operator[] (size_t) const;
+  T& operator[](size_t);
+  const T& operator[](size_t) const;
 
   T& At(size_t);
   const T& At(size_t) const;

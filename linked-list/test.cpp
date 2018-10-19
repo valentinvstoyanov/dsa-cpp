@@ -2,13 +2,13 @@
 #include "lib/catch.hpp"
 #include "linked_list.h"
 
-TEST_CASE( "LinkedList can be created", "[LinkedList]" ) {
+TEST_CASE("LinkedList can be created", "[LinkedList]") {
   LinkedList<int> list;
   REQUIRE(list.Empty());
   REQUIRE(list.Size() == 0);
 }
 
-TEST_CASE( "LinkedList push front elements", "[LinkedList]" ) {
+TEST_CASE("LinkedList push front elements", "[LinkedList]") {
   LinkedList<int> list;
   list.PushFront(10);
   list.PushFront(100);
@@ -16,7 +16,7 @@ TEST_CASE( "LinkedList push front elements", "[LinkedList]" ) {
   REQUIRE(list.Size() == 2);
 }
 
-TEST_CASE( "LinkedList pop front elements", "[LinkedList]" ) {
+TEST_CASE("LinkedList pop front elements", "[LinkedList]") {
   LinkedList<int> list;
   list.PushFront(10);
   list.PushFront(100);
@@ -25,7 +25,7 @@ TEST_CASE( "LinkedList pop front elements", "[LinkedList]" ) {
   REQUIRE(list.Empty());
 }
 
-TEST_CASE( "LinkedList get front/back element", "[LinkedList]" ) {
+TEST_CASE("LinkedList get front/back element", "[LinkedList]") {
   LinkedList<int> list;
   list.PushFront(10);
   list.PushFront(100);
@@ -33,7 +33,7 @@ TEST_CASE( "LinkedList get front/back element", "[LinkedList]" ) {
   REQUIRE(list.Front() == 100);
 }
 
-TEST_CASE( "LinkedList copy ctor", "[LinkedList]" ) {
+TEST_CASE("LinkedList copy ctor", "[LinkedList]") {
   LinkedList<int> l1;
   l1.PushFront(20);
   l1.PushFront(10);
@@ -43,7 +43,7 @@ TEST_CASE( "LinkedList copy ctor", "[LinkedList]" ) {
   REQUIRE(l2.Back() == l1.Back());
 }
 
-TEST_CASE( "LinkedList operator=", "[LinkedList]" ) {
+TEST_CASE("LinkedList operator=", "[LinkedList]") {
   LinkedList<int> l1;
   l1.PushFront(20);
   l1.PushFront(10);
