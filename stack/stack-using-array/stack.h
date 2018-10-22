@@ -5,7 +5,7 @@
 #ifndef STACK_USING_ARRAY_STACK_H
 #define STACK_USING_ARRAY_STACK_H
 
-#include <cstddef>
+#include <algorithm>
 
 template<typename T>
 class Stack {
@@ -16,10 +16,14 @@ class Stack {
   void Clear();
   void Copy(T* dest, T* src, size_t size) const;
  public:
-  Stack(size_t = 1);
+  explicit Stack(size_t = 1);
   Stack(const Stack&);
   ~Stack();
   Stack& operator=(const Stack&);
+  Stack& operator+=(const Stack&);
+  Stack& operator+=(const T&);
+  bool operator==(const Stack&) const;
+  bool operator!=(const Stack&) const;
 
   bool Empty() const;
 
@@ -99,6 +103,48 @@ void Stack<T>::Push(const T& val) {
 template<typename T>
 T Stack<T>::Pop() {
   return buffer_[top_--];
+}
+
+template<typename T>
+Stack<T>& Stack<T>::operator+=(const Stack& other) {
+  const int least_capacity_needed = top_ + other.top_ + 2;
+  if (capacity_ < least_capacity_needed) {
+    capacity_ = capacity_ == 0 ?
+        1 : std::max(2 * capacity_, static_cast<size_t>(least_capacity_needed));
+    T* buffer = new T[capacity_];
+    Copy(buffer, buffer_, static_cast<size_t>(top_ + 1));
+    delete[] buffer_;
+    buffer_ = buffer;
+  }
+  Copy(buffer_ + top_ + 1, other.buffer_, static_cast<size_t>(other.top_ + 1));
+  top_ += other.top_ + 1;
+
+  return *this;
+}
+
+template<typename T>
+Stack<T>& Stack<T>::operator+=(const T& val) {
+  Push(val);
+  return *this;
+}
+
+template<typename T>
+bool Stack<T>::operator==(const Stack& other) const {
+  if (this == &other)
+    return true;
+  if (top_ != other.top_)
+    return false;
+
+  for (size_t i = 0; i <= top_; ++i)
+    if (buffer_[i] != other.buffer_[i])
+      return false;
+
+  return true;
+}
+
+template<typename T>
+bool Stack<T>::operator!=(const Stack& other) const {
+  return !(*this == other);
 }
 
 #endif //STACK_USING_ARRAY_STACK_H

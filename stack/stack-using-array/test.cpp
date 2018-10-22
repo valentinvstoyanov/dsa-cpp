@@ -46,3 +46,38 @@ TEST_CASE("Stack operator=", "[Stack]") {
   REQUIRE(s2.Empty() == s1.Empty());
   REQUIRE(s2.Pop() == s1.Pop());
 }
+
+TEST_CASE("Stack += value", "[Stack]") {
+  Stack<int> s;
+  for (unsigned i = 0; i < 15; ++i)
+    s += i;
+  REQUIRE_FALSE(s.Empty());
+  REQUIRE(s.Pop() == 14);
+}
+
+
+TEST_CASE("Stack += other stack", "[Stack]") {
+  Stack<int> s1;
+  for (unsigned i = 10; i < 20; ++i)
+    s1.Push(i);
+  Stack<int> s2(20);
+  for (unsigned i = 0; i < 10; ++i)
+    s2.Push(i);
+  s2 += s1;
+
+  REQUIRE(s2.Pop() == s1.Pop());
+  unsigned i = 18;
+  while (!s2.Empty())
+    REQUIRE(s2.Pop() == i--);
+}
+
+TEST_CASE("Stack comparison", "[Stack]") {
+  Stack<int> s1;
+  Stack<int> s2(20);
+  for (unsigned i = 0; i < 10; ++i) {
+    s1.Push(i);
+    s2 += i;
+  }
+  REQUIRE(s1 == s2);
+  REQUIRE_FALSE(s1 != s2);
+}
