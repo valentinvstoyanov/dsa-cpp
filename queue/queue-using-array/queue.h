@@ -8,7 +8,7 @@
 #include <iostream>
 #include <cassert>
 
-template <typename T>
+template<typename T>
 class Queue {
   T* buffer_;
   size_t capacity_;
@@ -16,7 +16,7 @@ class Queue {
   size_t back_;
 
   void Clear();
-  void CopyFrom(const Queue&);
+  void CopyQueue(const Queue&);
   void Resize(size_t);
  public:
   explicit Queue(size_t = 2);
@@ -25,7 +25,6 @@ class Queue {
   Queue& operator=(const Queue&);
 
   Queue& operator+=(const T&);
-  Queue& operator+=(const Queue&);
   bool Empty() const;
 
   void Enqueue(const T&);
@@ -39,7 +38,7 @@ void Queue<T>::Clear() {
 }
 
 template<typename T>
-void Queue<T>::CopyFrom(const Queue& other) {
+void Queue<T>::CopyQueue(const Queue& other) {
   Clear();
   if (other.capacity_ == 0) {
     buffer_ = nullptr;
@@ -47,14 +46,8 @@ void Queue<T>::CopyFrom(const Queue& other) {
   }
   buffer_ = new T[other.capacity_];
   capacity_ = other.capacity_;
-
-  /*
-    TODO: maybe rearranged?
-  */
-
   for (size_t i = 0; i < other.capacity_; ++i)
     buffer_[i] = other.buffer_[i];
-
   front_ = other.front_;
   back_ = other.back_;
 }
@@ -82,7 +75,7 @@ Queue<T>::Queue(size_t capacity)
 
 template<typename T>
 Queue<T>::Queue(const Queue& other) {
-  CopyFrom(other);
+  CopyQueue(other);
 }
 
 template<typename T>
@@ -93,7 +86,7 @@ Queue<T>::~Queue() {
 template<typename T>
 Queue<T>& Queue<T>::operator=(const Queue& other) {
   if (this != &other)
-    CopyFrom(other);
+    CopyQueue(other);
   return *this;
 }
 
@@ -123,6 +116,5 @@ Queue<T>& Queue<T>::operator+=(const T& val) {
   Enqueue(val);
   return *this;
 }
-
 
 #endif //QUEUE_USING_ARRAY_QUEUE_H

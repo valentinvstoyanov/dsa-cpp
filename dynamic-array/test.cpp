@@ -238,6 +238,7 @@ TEST_CASE("DynamicArray push front 10 elements back", "[DynamicArray]") {
   for (unsigned i = 0; i < 10; ++i)
     arr.PushFront(i);
   REQUIRE(arr.Front() == 9);
+  REQUIRE(arr.Back() == 0);
   REQUIRE(arr.Size() == 10);
   REQUIRE(arr.Capacity() == 16);
 }

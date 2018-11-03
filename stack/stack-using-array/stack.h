@@ -15,6 +15,8 @@ class Stack {
 
   void Clear();
   void Copy(T* dest, T* src, size_t size) const;
+  void CopyStack(const Stack&);
+  void Resize(size_t capacity);
  public:
   explicit Stack(size_t = 1);
   Stack(const Stack&);
@@ -46,40 +48,49 @@ void Stack<T>::Copy(T* dest, T* src, size_t size) const {
 }
 
 template<typename T>
+void Stack<T>::CopyStack(const Stack& other) {
+  if (other.capacity_ > 0) {
+    buffer_ = new T[other.capacity_];
+    capacity_ = other.capacity_;
+    Copy(buffer_, other.buffer_, static_cast<size_t>((top_ = other.top_) + 1));
+  }
+}
+
+template<typename T>
+void Stack<T>::Resize(size_t capacity) {
+  T* buffer = new T[capacity];
+  capacity_ = capacity;
+  Copy(buffer, buffer_, static_cast<size_t>(top_ + 1));
+  delete[] buffer_;
+  buffer_ = buffer;
+}
+
+template<typename T>
 Stack<T>::Stack(size_t capacity)
     : top_(-1), capacity_(0), buffer_(nullptr) {
   if (capacity > 0) {
     buffer_ = new T[capacity];
-    capacity_ = capacity_;
+    capacity_ = capacity;
   }
 }
 
 template<typename T>
 Stack<T>::Stack(const Stack& other)
-    : top_(other.top_), capacity_(other.capacity_), buffer_(nullptr) {
-  if (other.capacity_ > 0) {
-    buffer_ = new T[other.capacity_];
-    Copy(buffer_, other.buffer_, static_cast<size_t>(other.top_ + 1));
-  }
+    : top_(-1), capacity_(0), buffer_(nullptr) {
+  CopyStack(other);
 }
 
 template<typename T>
 Stack<T>::~Stack() {
-  Clear();
+  delete[] buffer_;
 }
 
 template<typename T>
 Stack<T>& Stack<T>::operator=(const Stack& other) {
   if (this != &other) {
     Clear();
-    if (other.capacity_ > 0) {
-      buffer_ = new T[other.capacity_];
-      Copy(buffer_, other.buffer_, static_cast<size_t>(other.top_ + 1));
-      top_ = other.top_;
-      capacity_ = other.capacity_;
-    }
+    CopyStack(other);
   }
-
   return *this;
 }
 
@@ -90,13 +101,8 @@ bool Stack<T>::Empty() const {
 
 template<typename T>
 void Stack<T>::Push(const T& val) {
-  if (top_ + 1 == capacity_) {
-    capacity_ = capacity_ == 0 ? 1 : 2 * capacity_;
-    T* buffer = new T[capacity_];
-    Copy(buffer, buffer_, static_cast<size_t>(top_ + 1));
-    delete[] buffer_;
-    buffer_ = buffer;
-  }
+  if (top_ + 1 == capacity_)
+    Resize(capacity_ == 0 ? 1 : 2 * capacity_);
   buffer_[++top_] = val;
 }
 
@@ -108,17 +114,10 @@ T Stack<T>::Pop() {
 template<typename T>
 Stack<T>& Stack<T>::operator+=(const Stack& other) {
   const int least_capacity_needed = top_ + other.top_ + 2;
-  if (capacity_ < least_capacity_needed) {
-    capacity_ = capacity_ == 0 ?
-        1 : std::max(2 * capacity_, static_cast<size_t>(least_capacity_needed));
-    T* buffer = new T[capacity_];
-    Copy(buffer, buffer_, static_cast<size_t>(top_ + 1));
-    delete[] buffer_;
-    buffer_ = buffer;
-  }
+  if (capacity_ < least_capacity_needed)
+    Resize(capacity_ == 0 ? 1 : std::max(2 * capacity_, static_cast<size_t>(least_capacity_needed)));
   Copy(buffer_ + top_ + 1, other.buffer_, static_cast<size_t>(other.top_ + 1));
   top_ += other.top_ + 1;
-
   return *this;
 }
 

@@ -20,7 +20,7 @@ class LinkedList {
   size_t size_;
 
   typename LinkedList<T>::Node* GetLastNode() const;
-  void Copy(const LinkedList&);
+  void CopyLinkedList(const LinkedList&);
  public:
   LinkedList();
   LinkedList(const LinkedList&);
@@ -66,14 +66,13 @@ typename LinkedList<T>::Node* LinkedList<T>::GetLastNode() const {
 }
 
 template<typename T>
-void LinkedList<T>::Copy(const LinkedList& other) {
+void LinkedList<T>::CopyLinkedList(const LinkedList& other) {
   if (other.Empty())
     return;
 
   Node* other_current = other.head_->next_;
-  Node* this_current = new Node(other.head_->val_);
-  head_ = this_current;
-  ++size_;
+  PushFront(other.head_->val_);
+  Node* this_current = head_;
   while (other_current != nullptr) {
     this_current->next_ = new Node(other_current->val_);
     other_current = other_current->next_;
@@ -86,14 +85,14 @@ void LinkedList<T>::Copy(const LinkedList& other) {
 template<typename T>
 LinkedList<T>::LinkedList(const LinkedList& other)
     : head_(nullptr), size_(0) {
-  Copy(other);
+  CopyLinkedList(other);
 }
 
 template<typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
   if (this != &other) {
     Clear();
-    Copy(other);
+    CopyLinkedList(other);
   }
 
   return *this;

@@ -60,12 +60,10 @@ class DynamicArray {
 template<typename T>
 DynamicArray<T>::DynamicArray(size_t capacity)
     : buffer_(nullptr), size_(0), capacity_(0) {
-  if (capacity == 0) {
-    Clear();
-    return;
+  if (capacity > 0) {
+    buffer_ = new T[capacity];
+    capacity_ = capacity;
   }
-  buffer_ = new T[capacity];
-  capacity_ = capacity;
 }
 
 template<typename T>
@@ -78,7 +76,7 @@ DynamicArray<T>::DynamicArray(const DynamicArray& other)
 
 template<typename T>
 DynamicArray<T>::~DynamicArray() {
-  Clear();
+  delete[] buffer_;
 }
 
 template<typename T>
@@ -98,6 +96,7 @@ DynamicArray<T>& DynamicArray<T>::operator=(const DynamicArray& other) {
 template<typename T>
 void DynamicArray<T>::Clear() {
   delete[] buffer_;
+  buffer_ = nullptr;
   size_ = 0;
   capacity_ = 0;
 }
@@ -229,7 +228,8 @@ template<typename T>
 void DynamicArray<T>::PushFront(const T& val) {
   if (size_ == capacity_)
     Resize(size_ == 0 ? 1 : size_ * 2);
-  Copy(buffer_ + 1, buffer_, size_);
+  for (long i = size_ - 1; i >= 0; --i)
+    buffer_[i + 1] = buffer_[i];
   buffer_[0] = val;
   ++size_;
 }
