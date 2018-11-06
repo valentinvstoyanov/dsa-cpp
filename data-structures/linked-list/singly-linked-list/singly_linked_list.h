@@ -8,7 +8,7 @@
 #include <cstddef>
 
 template<typename T>
-class LinkedList {
+class SinglyLinkedList {
   struct Node {
     T val_;
     Node* next_;
@@ -19,19 +19,19 @@ class LinkedList {
   Node* head_;
   size_t size_;
 
-  typename LinkedList<T>::Node* GetLastNode() const;
-  void CopyLinkedList(const LinkedList&);
+  typename SinglyLinkedList<T>::Node* GetLastNode() const;
+  void CopyLinkedList(const SinglyLinkedList&);
  public:
-  LinkedList();
-  LinkedList(const LinkedList&);
-  ~LinkedList();
-  LinkedList& operator=(const LinkedList&);
+  SinglyLinkedList();
+  SinglyLinkedList(const SinglyLinkedList&);
+  ~SinglyLinkedList();
+  SinglyLinkedList& operator=(const SinglyLinkedList&);
 
-  bool operator==(const LinkedList<T>& other) const;
-  bool operator!=(const LinkedList<T>& other) const;
+  bool operator==(const SinglyLinkedList<T>& other) const;
+  bool operator!=(const SinglyLinkedList<T>& other) const;
 
-  LinkedList<T>& operator+=(const LinkedList<T>& other);
-  LinkedList<T>& operator+=(const T& val);
+  SinglyLinkedList<T>& operator+=(const SinglyLinkedList<T>& other);
+  SinglyLinkedList<T>& operator+=(const T& val);
 
   bool Empty() const;
   size_t Size() const;
@@ -49,16 +49,16 @@ class LinkedList {
 };
 
 template<typename T>
-LinkedList<T>::LinkedList()
+SinglyLinkedList<T>::SinglyLinkedList()
     : head_(nullptr), size_(0) {}
 
 template<typename T>
-LinkedList<T>::~LinkedList() {
+SinglyLinkedList<T>::~SinglyLinkedList() {
   Clear();
 }
 
 template<typename T>
-typename LinkedList<T>::Node* LinkedList<T>::GetLastNode() const {
+typename SinglyLinkedList<T>::Node* SinglyLinkedList<T>::GetLastNode() const {
   Node* current = head_;
   while (current->next_ != nullptr)
     current = current->next_;
@@ -66,7 +66,7 @@ typename LinkedList<T>::Node* LinkedList<T>::GetLastNode() const {
 }
 
 template<typename T>
-void LinkedList<T>::CopyLinkedList(const LinkedList& other) {
+void SinglyLinkedList<T>::CopyLinkedList(const SinglyLinkedList& other) {
   if (other.Empty())
     return;
 
@@ -83,13 +83,13 @@ void LinkedList<T>::CopyLinkedList(const LinkedList& other) {
 }
 
 template<typename T>
-LinkedList<T>::LinkedList(const LinkedList& other)
+SinglyLinkedList<T>::SinglyLinkedList(const SinglyLinkedList& other)
     : head_(nullptr), size_(0) {
   CopyLinkedList(other);
 }
 
 template<typename T>
-LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+SinglyLinkedList<T>& SinglyLinkedList<T>::operator=(const SinglyLinkedList& other) {
   if (this != &other) {
     Clear();
     CopyLinkedList(other);
@@ -99,17 +99,17 @@ LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
 }
 
 template<typename T>
-bool LinkedList<T>::Empty() const {
+bool SinglyLinkedList<T>::Empty() const {
   return size_ == 0;
 }
 
 template<typename T>
-size_t LinkedList<T>::Size() const {
+size_t SinglyLinkedList<T>::Size() const {
   return size_;
 }
 
 template<typename T>
-void LinkedList<T>::PushFront(const T& val) {
+void SinglyLinkedList<T>::PushFront(const T& val) {
   Node* new_head = new Node(val);
   new_head->next_ = head_;
   head_ = new_head;
@@ -117,7 +117,7 @@ void LinkedList<T>::PushFront(const T& val) {
 }
 
 template<typename T>
-void LinkedList<T>::PopFront() {
+void SinglyLinkedList<T>::PopFront() {
   assert(!Empty() && "Pop method called on empty list");
   Node* new_head = head_->next_;
   delete head_;
@@ -126,7 +126,7 @@ void LinkedList<T>::PopFront() {
 }
 
 template<typename T>
-void LinkedList<T>::PushBack(const T& val) {
+void SinglyLinkedList<T>::PushBack(const T& val) {
   if (Empty()) {
     head_ = new Node(val);
     head_->next_ = nullptr;
@@ -139,7 +139,7 @@ void LinkedList<T>::PushBack(const T& val) {
 }
 
 template<typename T>
-void LinkedList<T>::PopBack() {
+void SinglyLinkedList<T>::PopBack() {
   assert(!Empty() && "Pop method called on empty list");
   if (size_ == 1) {
     delete head_;
@@ -155,19 +155,19 @@ void LinkedList<T>::PopBack() {
 }
 
 template<typename T>
-const T& LinkedList<T>::Front() const {
+const T& SinglyLinkedList<T>::Front() const {
   assert(!Empty() && "Front method called on empty list");
   return head_->val_;
 }
 
 template<typename T>
-const T& LinkedList<T>::Back() const {
+const T& SinglyLinkedList<T>::Back() const {
   assert(!Empty() && "Back method called on empty list");
   return GetLastNode()->val_;
 }
 
 template<typename T>
-void LinkedList<T>::Clear() {
+void SinglyLinkedList<T>::Clear() {
   while (!Empty())
     PopFront();
   delete head_;
@@ -175,7 +175,7 @@ void LinkedList<T>::Clear() {
 }
 
 template<typename T>
-LinkedList<T>& LinkedList<T>::operator+=(const LinkedList<T>& other) {
+SinglyLinkedList<T>& SinglyLinkedList<T>::operator+=(const SinglyLinkedList<T>& other) {
   if (!other.Empty()) {
     Node* last = GetLastNode();
     Node* other_current = other.head_;
@@ -193,13 +193,13 @@ LinkedList<T>& LinkedList<T>::operator+=(const LinkedList<T>& other) {
 }
 
 template<typename T>
-LinkedList<T>& LinkedList<T>::operator+=(const T& val) {
+SinglyLinkedList<T>& SinglyLinkedList<T>::operator+=(const T& val) {
   PushBack(val);
   return *this;
 }
 
 template<typename T>
-bool LinkedList<T>::operator==(const LinkedList<T>& other) const {
+bool SinglyLinkedList<T>::operator==(const SinglyLinkedList<T>& other) const {
   if (this == &other)
     return true;
   if (size_ != other.size_)
@@ -218,7 +218,7 @@ bool LinkedList<T>::operator==(const LinkedList<T>& other) const {
 }
 
 template<typename T>
-bool LinkedList<T>::operator!=(const LinkedList<T>& other) const {
+bool SinglyLinkedList<T>::operator!=(const SinglyLinkedList<T>& other) const {
   return !(*this == other);
 }
 
