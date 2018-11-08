@@ -17,4 +17,5 @@ TEST_CASE("Fast power with 0 power", "[FastPow]") {
 
 TEST_CASE("Fast power with negative base", "[FastPow]") {
   REQUIRE(FastPow(-10, 2) == 100);
+  REQUIRE(FastPow(-10, 3) == -1000);
 }

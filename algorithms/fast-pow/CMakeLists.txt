@@ -3,4 +3,4 @@ project(fast-pow)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(fast-pow test.cpp fast_pow.h lib/catch.hpp)
+add_executable(fast-pow test.cpp fast_pow.h lib/catch.hpp fast_pow.cc)
