@@ -3,4 +3,4 @@ project(gcd-lcm)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(gcd-lcm main.cpp)
+add_executable(gcd-lcm test.cpp lib/catch.hpp gcd_lcm.h gcd_lcm.cc)
