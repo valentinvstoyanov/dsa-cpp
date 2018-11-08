@@ -9,6 +9,7 @@
 
 template<typename T>
 void BubbleSort(T* arr, size_t size, bool ascending = true) {
+  if (!arr) return;
   bool swapped = true;
   for (size_t i = 0; swapped && i < size; ++i) {
     swapped = false;

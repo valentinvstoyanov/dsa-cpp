@@ -26,3 +26,11 @@ TEST_CASE("Bubble sort unsorted array", "[BubbleSort]") {
   for (size_t i = 0; i < size; ++i)
     REQUIRE(arr[i] == expected_arr[i]);
 }
+
+TEST_CASE("Bubble sort null pointer", "[BubbleSort]") {
+  int* arr = nullptr;
+  BubbleSort(arr, 0);
+  REQUIRE(arr == nullptr);
+  BubbleSort(arr, 10, false);
+  REQUIRE(arr == nullptr);
+}

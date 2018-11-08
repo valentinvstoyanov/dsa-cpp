@@ -9,6 +9,7 @@
 
 template<typename T>
 void InsertionSort(T* arr, size_t size, bool ascending = true) {
+  if (!arr) return;
   for (size_t i = 1; i < size; ++i)
     for (size_t j = i; j > 0 && (ascending ? arr[j] < arr[j - 1] : arr[j] > arr[j - 1]); --j)
       std::swap(arr[j], arr[j - 1]);

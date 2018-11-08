@@ -36,3 +36,11 @@ TEST_CASE("Insertion sort unsorted array", "[InsertionSort]") {
       REQUIRE(arr[i] == expected_arr[i]);
   }
 }
+
+TEST_CASE("Insertion sort null pointer", "[InsertionSort]") {
+  int* arr = nullptr;
+  InsertionSort(arr, 0);
+  REQUIRE(arr == nullptr);
+  InsertionSort(arr, 10, false);
+  REQUIRE(arr == nullptr);
+}
