@@ -12,7 +12,7 @@ class SinglyLinkedList {
   struct Node {
     T val_;
     Node* next_;
-    Node(const T& val)
+    explicit Node(const T& val)
         : val_(val) {};
   };
 
@@ -146,8 +146,8 @@ void SinglyLinkedList<T>::PopBack() {
     head_ = nullptr;
   } else {
     Node* current = head_;
-    do current = current->next_;
-    while (current->next_ != nullptr);
+    while (current->next_->next_ != nullptr)
+      current = current->next_;
     delete current->next_;
     current->next_ = nullptr;
   }
@@ -171,15 +171,17 @@ void SinglyLinkedList<T>::Clear() {
   while (!Empty())
     PopFront();
   delete head_;
+  head_ = nullptr;
   size_ = 0;
 }
 
 template<typename T>
 SinglyLinkedList<T>& SinglyLinkedList<T>::operator+=(const SinglyLinkedList<T>& other) {
+  if (size_ == 0)
+    return *this = other;
   if (!other.Empty()) {
     Node* last = GetLastNode();
     Node* other_current = other.head_;
-
     while (other_current != nullptr) {
       last->next_ = new Node(other_current->val_);
       last = last->next_;
@@ -188,7 +190,6 @@ SinglyLinkedList<T>& SinglyLinkedList<T>::operator+=(const SinglyLinkedList<T>& 
     }
     last->next_ = nullptr;
   }
-
   return *this;
 }
 
