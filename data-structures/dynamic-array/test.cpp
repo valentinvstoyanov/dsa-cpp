@@ -60,11 +60,13 @@ TEST_CASE("Pop elements from" DS "should not throw", DS) {
   const int test_arr[test_arr_size] = {5, 1, 2, 4, 3};
   DynamicArray<int> ds;
   for (int i = 0; i < test_arr_size; ++i)
-    ds.PushBack(i);
+    ds.PushBack(test_arr[i]);
 
   SECTION("Pop back elements") {
-    for (int i = 0; i < test_arr_size; ++i)
+    for (int i = 0; i < test_arr_size; ++i) {
+      REQUIRE(ds.Back() == test_arr[test_arr_size - i - 1]);
       REQUIRE_NOTHROW(ds.PopBack());
+    }
     REQUIRE(ds.Empty());
     REQUIRE(ds.Size() == 0);
   }
