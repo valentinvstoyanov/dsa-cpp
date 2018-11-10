@@ -13,7 +13,6 @@ class Stack {
   int top_;
   size_t capacity_;
 
-  void Clear();
   void Copy(T* dest, T* src, size_t size) const;
   void CopyStack(const Stack&);
   void Resize(size_t capacity);
@@ -21,6 +20,7 @@ class Stack {
   explicit Stack(size_t = 1);
   Stack(const Stack&);
   ~Stack();
+
   Stack& operator=(const Stack&);
   Stack& operator+=(const Stack&);
   Stack& operator+=(const T&);
@@ -28,14 +28,18 @@ class Stack {
   bool operator!=(const Stack&) const;
 
   bool Empty() const;
+  size_t Size() const;
 
   void Push(const T&);
   T Pop();
+
+  void Clear();
 };
 
 template<typename T>
 void Stack<T>::Clear() {
   delete[] buffer_;
+  buffer_ = nullptr;
   top_ = -1;
   capacity_ = 0;
 }
@@ -100,6 +104,11 @@ bool Stack<T>::Empty() const {
 }
 
 template<typename T>
+size_t Stack<T>::Size() const {
+  return static_cast<size_t>(top_ + 1);
+}
+
+template<typename T>
 void Stack<T>::Push(const T& val) {
   if (top_ + 1 == capacity_)
     Resize(capacity_ == 0 ? 1 : 2 * capacity_);
@@ -133,8 +142,7 @@ bool Stack<T>::operator==(const Stack& other) const {
     return true;
   if (top_ != other.top_)
     return false;
-
-  for (size_t i = 0; i <= top_; ++i)
+  for (int i = 0; i <= top_; ++i)
     if (buffer_[i] != other.buffer_[i])
       return false;
 
@@ -145,5 +153,6 @@ template<typename T>
 bool Stack<T>::operator!=(const Stack& other) const {
   return !(*this == other);
 }
+
 
 #endif //STACK_USING_ARRAY_STACK_H

@@ -79,23 +79,6 @@ TEST_CASE("Pop elements from" DS "should not throw", DS) {
   }
 }
 
-/*
-  TEST_CASE("At() and operator[] should work", DS) {
-  SinglyLinkedList<int> ds;
-  const unsigned e1 = 0, e2 = 1, e3 = 2;
-  ds.PushFront(e1); ds.PushBack(e2); ds.PushBack(e3);
-  SECTION("Test At()") {
-    REQUIRE(ds.At(0) == e1);
-    REQUIRE(ds.At(1) == e2);
-    REQUIRE(ds.At(2) == e3);
-  }
-  SECTION("Test operator[]") {
-    REQUIRE(ds[0] == e1);
-    REQUIRE(ds[1] == e2);
-    REQUIRE(ds[2] == e3);
-  }
-}*/
-
 TEST_CASE("Clear() non-empty" DS, DS) {
   SinglyLinkedList<int> ds;
   const unsigned e1 = 0, e2 = 1, e3 = 2;
