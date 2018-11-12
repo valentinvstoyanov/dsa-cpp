@@ -3,4 +3,4 @@ project(queue_using_array)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(queue_using_array test.cpp lib/catch.hpp queue.h)
+add_executable(queue_using_array test.cc lib/catch.hpp queue.h)
