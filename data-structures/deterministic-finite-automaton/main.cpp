@@ -5,15 +5,15 @@
 
 using namespace std;
 
-template <typename T, typename S>
-void test(vector<T> v, const char* txt, DFA<T, S>& dfa) {
+template <typename AT, typename ST>
+void test(vector<AT> v, const char* txt, DFA<AT, ST>& dfa) {
   for (auto& e: v) cout << e;
   cout << txt << (dfa(v) ? "true" : "false") << ", current state: " << dfa.CurrentState() << endl;
   dfa.Clear();
 }
 
 int main() {
-  DFA<int, string> dfa1("q1", true);
+  DFA<int, string> dfa1({1, 0}, "q1", true);
   dfa1.AddState("q2");
   dfa1.AddTransition("q1", 1, "q1");
   dfa1.AddTransition("q1", 0, "q2");
