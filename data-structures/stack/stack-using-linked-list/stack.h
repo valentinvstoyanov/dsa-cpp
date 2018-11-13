@@ -7,6 +7,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <iostream>
 
 template<typename T>
 class Stack {
@@ -82,7 +83,20 @@ Stack<T>& Stack<T>::operator=(const Stack& other) {
 
 template<typename T>
 Stack<T>& Stack<T>::operator+=(const Stack& rhs) {
-  //TODO
+  if (!rhs.Empty()) {
+    Node* llist_head = new Node(rhs.top_->data_);
+    Node* llist = llist_head;
+    Node* rhs_curr = rhs.top_;
+    while(rhs_curr->next_) {
+      Node* node = new Node(rhs_curr->next_->data_);
+      llist->next_ = node;
+      llist = llist->next_;
+      rhs_curr = rhs_curr->next_;
+    }
+    llist->next_ = top_;
+    top_ = llist_head;
+    size_ += rhs.size_;
+  }
   return *this;
 }
 

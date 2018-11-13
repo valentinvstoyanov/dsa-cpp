@@ -127,7 +127,6 @@ TEST_CASE(DS "operator+= should append correctly", DS) {
     REQUIRE(ds == empty_ds);
   }
   SECTION("When lhs is empty") {
-    //Feature not yet implemented
     Stack<int> lhs;
     Stack<int> rhs;
     const int rhs_elements_count = 10;
