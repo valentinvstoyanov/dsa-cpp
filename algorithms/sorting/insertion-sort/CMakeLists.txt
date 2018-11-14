@@ -3,4 +3,4 @@ project(insertion_sort)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(insertion_sort test.cpp lib/catch.hpp insertion_sort.h)
+add_executable(insertion_sort test.cc lib/catch.hpp insertion_sort.h)
