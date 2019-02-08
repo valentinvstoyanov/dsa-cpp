@@ -1,31 +1,37 @@
 #include <iostream>
 #include <string>
-#include <vector>
 #include "dfa.h"
 
 using namespace std;
 
-template <typename AT, typename ST>
-void test(vector<AT> v, const char* txt, DFA<AT, ST>& dfa) {
-  for (auto& e: v) cout << e;
-  cout << txt << (dfa(v) ? "true" : "false") << ", current state: " << dfa.CurrentState() << endl;
-  dfa.Clear();
+void test(const std::string& str, const char* txt, DFA<int>& dfa) {
+  cout << str << txt << (dfa(str) ? "true" : "false") << endl;
 }
 
 int main() {
-  DFA<int, string> dfa1({1, 0}, "q1", true);
-  dfa1.AddState("q2");
-  dfa1.AddTransition("q1", 1, "q1");
-  dfa1.AddTransition("q1", 0, "q2");
-  dfa1.AddTransition("q2", 1, "q2");
-  dfa1.AddTransition("q2", 0, "q1");
+  DFA<int> dfa;
+  std::cout << dfa.AddState(0, true);
+  std::cout << dfa.AddState(1);
+  std::cout << dfa.AddTransition(0, '0', 1);
+  std::cout << dfa.AddTransition(0, '1', 0);
+  std::cout << dfa.AddTransition(1, '1', 1);
+  std::cout << dfa.AddTransition(1, '0', 0);
+
+  std::cout << "\nstates: " << dfa.StatesCount() << ", finals: " << dfa.FinalStatesCount() << std::endl;
 
   const char* descr = " contains even number of zeros? : ";
-  test({1, 0}, descr, dfa1);
-  test({1, 0, 0}, descr, dfa1);
-  test({1, 0, 0, 0}, descr, dfa1);
-  test({1, 1, 1, 0, 1, 1, 0}, descr, dfa1);
-  test({1, 1, 0, 0, 1, 1}, descr, dfa1);
+  test("10", descr, dfa);
+  test("100", descr, dfa);
+  test("1000", descr, dfa);
+  test("1110110", descr, dfa);
+  test("110011", descr, dfa);
+
+  std::cout << dfa.RemoveState(1);
+  std::cout << dfa.AddState(1);
+  std::cout << dfa.RemoveTransition(0, 1);
+  std::cout << dfa.RemoveTransition(0, '0');
+  std::cout << dfa.RemoveTransition(0, 0);
+  std::cout << dfa.RemoveTransition(0, '1');
 
   return 0;
 }

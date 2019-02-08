@@ -5,143 +5,174 @@
 #ifndef DETERMINISTIC_FINITE_AUTOMATON_DFA_H
 #define DETERMINISTIC_FINITE_AUTOMATON_DFA_H
 
-#include <set>
-#include <map>
-#include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include <cassert>
+#include <functional>
 
-template<typename AlphabetType, typename StateType>
+template<typename State, typename Char = char, typename String = std::basic_string<Char>>
 class DFA {
-  std::set<AlphabetType> alphabet_;
-  std::set<StateType> states_;
-  std::set<StateType> final_states_;
-  StateType start_state_;
-  StateType current_state_;
-  std::map<std::pair<StateType, AlphabetType>, StateType> delta_;
+  using TransitionMap = std::unordered_map<Char, State>;
+  using StateMap = std::unordered_map<State, TransitionMap>;
+
+  using OptionalState = std::optional<State>;
+
+  StateMap states_;
+  OptionalState start_;
+  std::unordered_set<State> finals_;
  public:
-  DFA(const std::set<AlphabetType>& alphabet,
-      const StateType& start_state,
-      bool final = false);
-  DFA(const std::set<AlphabetType>& alphabet,
-      const std::set<StateType>& states,
-      const std::set<StateType>& final_states,
-      const StateType& start_state,
-      const std::map<std::pair<StateType, AlphabetType>, StateType>& delta);
+  bool AddState(const State& state, bool final = false) {
+    auto state_it = states_.find(state);
 
-  const std::set<AlphabetType>& GetAlphabet() const;
-  const std::set<StateType>& GetStates() const;
-  const std::set<StateType>& GetFinalStates() const;
-  const StateType& GetStartState() const;
-  const std::map<std::pair<StateType, AlphabetType>, StateType>& GetDelta() const;
+    if (state_it != states_.end())
+      return false;
 
-  void AddState(const StateType& state, bool final = false);
-  void AddTransition(const std::pair<StateType, AlphabetType>&, const StateType&);
-  void AddTransition(const StateType&, AlphabetType, const StateType&);
+    states_.insert(std::make_pair(state, TransitionMap()));
 
-  void Clear();
+    if (final)
+      finals_.insert(state);
 
-  const StateType& CurrentState() const;
+    if (states_.size() == 1)
+      start_ = state;
 
-  bool operator()() const;
-  bool operator()(AlphabetType);
-  bool operator()(const std::vector<AlphabetType>&);
-};
-
-template<typename AlphabetType, typename StateType>
-DFA<AlphabetType, StateType>::DFA(const std::set<AlphabetType>& alphabet,
-    const StateType& start_state,
-    bool final)
-    : alphabet_(alphabet), start_state_(start_state), current_state_(start_state) {
-  AddState(start_state, final);
-}
-
-template<typename AlphabetType, typename StateType>
-DFA<AlphabetType, StateType>::DFA(const std::set<AlphabetType>& alphabet,
-               const std::set<StateType>& states,
-               const std::set<StateType>& final_states,
-               const StateType& start_state,
-               const std::map<std::pair<StateType, AlphabetType>, StateType>& delta)
-    : alphabet_(alphabet),
-      states_(states),
-      start_state_(start_state),
-      final_states_(final_states),
-      delta_(delta),
-      current_state_(start_state) {}
-
-template<typename AlphabetType, typename StateType>
-void DFA<AlphabetType, StateType>::AddState(const StateType& state, bool final) {
-  states_.insert(state);
-  if (final) final_states_.insert(state);
-}
-
-template<typename AlphabetType, typename StateType>
-void DFA<AlphabetType, StateType>::AddTransition(const std::pair<StateType, AlphabetType>& from, const StateType& to) {
-  assert(alphabet_.count(from.second) > 0 && "Cannot add transition with letter that is not in the alphabet");
-  assert(states_.count(from.first) && states_.count(to) && "Cannot add transition from/to non-existing state");
-  delta_.insert(std::pair<std::pair<StateType, AlphabetType>, StateType>(from, to));
-}
-
-template<typename AlphabetType, typename StateType>
-void DFA<AlphabetType, StateType>::AddTransition(const StateType& from_state, AlphabetType letter, const StateType& to_state) {
-  AddTransition(std::pair<StateType, AlphabetType>(from_state, letter), to_state);
-}
-
-template<typename AlphabetType, typename StateType>
-const StateType& DFA<AlphabetType, StateType>::CurrentState() const {
-  assert(states_.size() && "CurrentState(): no states provided");
-  return current_state_;
-}
-
-template<typename AlphabetType, typename StateType>
-void DFA<AlphabetType, StateType>::Clear() {
-  current_state_ = start_state_;
-}
-
-template<typename AlphabetType, typename StateType>
-bool DFA<AlphabetType, StateType>::operator()() const {
-  return final_states_.count(current_state_) > 0;
-}
-
-template<typename AlphabetType, typename StateType>
-bool DFA<AlphabetType, StateType>::operator()(AlphabetType letter) {
-  std::pair<StateType, AlphabetType> key(current_state_, letter);
-  if (delta_.count(key)) {
-    auto it = delta_.find(key);
-    current_state_ = it->second;
+    return true;
   }
-  return (*this)();
-}
 
-template<typename AlphabetType, typename StateType>
-bool DFA<AlphabetType, StateType>::operator()(const std::vector<AlphabetType>& word) {
-  for (auto& letter: word)
-    (*this)(letter);
-  return (*this)();
-}
+  bool AddTransition(const State& from, const Char& with, const State& to) {
+    auto from_it = states_.find(from);
 
-template<typename AlphabetType, typename StateType>
-const std::set<AlphabetType>& DFA<AlphabetType, StateType>::GetAlphabet() const {
-  return alphabet_;
-}
+    if (from_it == states_.end() || states_.find(to) == states_.end())
+      return false;
 
-template<typename AlphabetType, typename StateType>
-const std::set<StateType>& DFA<AlphabetType, StateType>::GetStates() const {
-  return states_;
-}
+    TransitionMap& transitions = from_it->second;
+    if (transitions.find(with) != transitions.end())
+      return false;
 
-template<typename AlphabetType, typename StateType>
-const std::set<StateType>& DFA<AlphabetType, StateType>::GetFinalStates() const {
-  return final_states_;
-}
+    transitions.insert(std::make_pair(with, to));
+    return true;
+  }
 
-template<typename AlphabetType, typename StateType>
-const StateType& DFA<AlphabetType, StateType>::GetStartState() const {
-  return start_state_;
-}
+  bool RemoveState(const State& state) {
+    auto state_it = states_.find(state);
 
-template<typename AlphabetType, typename StateType>
-const std::map<std::pair<StateType, AlphabetType>, StateType>& DFA<AlphabetType, StateType>::GetDelta() const {
-  return delta_;
-}
+    if (state_it == states_.end())
+      return false;
+
+    states_.erase(state_it);
+    for (state_it = states_.begin(); state_it != states_.end(); ++state_it) {
+      TransitionMap& transitions = state_it->second;
+      for (auto transition_it = transitions.begin(); transition_it != transitions.end(); ++transition_it) {
+        if (transition_it->second == state) {
+          transitions.erase(transition_it);
+          break;
+        }
+      }
+    }
+
+    auto finals_it = finals_.find(state);
+    if (finals_it != finals_.end())
+      finals_.erase(finals_it);
+
+    if (start_ && state == *start_)
+      start_ = {};
+
+    return true;
+  }
+
+  bool RemoveTransition(const State& from, const State& to) {
+    auto state_it = states_.find(from);
+
+    if (state_it == states_.end() || states_.find(to) == states_.end())
+      return false;
+
+    TransitionMap& transitions = state_it->second;
+    for (auto transition_it = transitions.begin(); transition_it != transitions.end(); ++transition_it) {
+      if (transition_it->second == to) {
+        transitions.erase(transition_it);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool RemoveTransition(const State& from, const Char& with) {
+    auto state_it = states_.find(from);
+    if (state_it == states_.end())
+      return false;
+
+    TransitionMap& transitions = state_it->second;
+    auto transition_it = transitions.find(with);
+    if (transition_it == transitions.end())
+      return false;
+
+    transitions.erase(transition_it);
+    return true;
+  }
+
+  void SetStartState(const State& start) {
+    assert(states_.find(start) != states_.end() && "To set start state you need to add it first");
+    start_ = start;
+  }
+
+  OptionalState delta(const State& from, const Char& with) const {
+    auto state_it = states_.find(from);
+    if (state_it == states_.end())
+      return {};
+
+    const TransitionMap& transitions = state_it->second;
+    auto transition_it = transitions.find(with);
+    if (transition_it == transitions.end())
+      return {};
+
+    return transition_it->second;
+  }
+
+  OptionalState deltaStar(const State& from, const String& with) const {
+    State current = from;
+
+    for (size_t i = 0; i < with.size(); ++i)
+      if (OptionalState next = delta(current, with[i]))
+        current = *next;
+      else
+        return {};
+
+    return current;
+  }
+
+  bool isFinal(const State& state) const {
+    return finals_.find(state) != finals_.end();
+  }
+
+  bool Recognizes(const State& from, const String& with) const {
+    OptionalState result = deltaStar(from, with);
+    return result ? isFinal(*result) : false;
+  }
+
+  bool Recognizes(const String& str) const {
+    assert(start_ && "No start state to begin with");
+    return Recognizes(*start_, str);
+  }
+
+  bool operator()(const String& str) const {
+    return Recognizes(str);
+  }
+
+  bool operator()(const State& from, const String& with) const {
+    return Recognizes(from, with);
+  }
+
+  size_t StatesCount() const {
+    return states_.size();
+  }
+
+  size_t FinalStatesCount() const {
+    return finals_.size();
+  }
+
+  const State& StartState() const {
+    assert(start_ && "No start state to return");
+    return *start_;
+  }
+};
 
 #endif //DETERMINISTIC_FINITE_AUTOMATON_DFA_H
