@@ -3,14 +3,6 @@
 
 using namespace std;
 
-template<typename T>
-void PrintVector(const vector<T>& v, const string& str) {
-  cout << str << ": ";
-  for (size_t i = 0; i < v.size(); ++i)
-    cout << v[i] << ' ';
-  cout << endl;
-}
-
 int main() {
   BST<int> bst;
   bst.Insert(8);
@@ -23,10 +15,24 @@ int main() {
   bst.Insert(14);
   bst.Insert(13);
 
-  PrintVector(bst.PreOrder(), "Pre-order: ");
-  PrintVector(bst.InOrder(), "In-order: ");
-  PrintVector(bst.PostOrder(), "Post-order: ");
+  const auto walk_callback = [](const int& data) { cout << data << " ";};
+  bst.PreOrderWalk(walk_callback); cout << endl;
+  bst.InOrderWalk(walk_callback); cout << endl;
+  bst.PostOrderWalk(walk_callback); cout << endl;
 
+  bst.Remove(3);
+  bst.InOrderWalk(walk_callback); cout << endl;
 
+  bst.Remove(8);
+  bst.InOrderWalk(walk_callback); cout << endl;
+
+  assert(bst.Contains(8) == false && "8 should be deleted");
+  assert(bst.Empty() == false && "bst should not be empty");
+  assert(bst.Min() == 1 && "min element should be 1");
+  assert(bst.Max() == 14 && "max element should be 14");
+
+  bst.Insert(100000);
+  assert(bst.Max() > 20 && "max element should be > 20");
+  
   return 0;
 }
