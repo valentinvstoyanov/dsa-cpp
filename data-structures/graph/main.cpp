@@ -75,6 +75,20 @@ int main() {
     return val % 2 != 0;
   });
 
+  std::cout << '\n';
+
+  auto sinks = graph.Sinks();
+  for (auto& sink: sinks)
+    std::cout << sink << " ";
+
+  std::cout << '\n';
+
+  auto sources = graph.Sources();
+  for (auto& source: sources)
+    std::cout << source << " ";
+
+  std::cout << '\n';
+
 
   return 0;
 }

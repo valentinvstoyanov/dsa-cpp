@@ -6,7 +6,6 @@
 #include <unordered_set>
 #include <queue>
 #include <cassert>
-#include <iostream>
 
 template<typename V = int, typename E = int>
 class Graph {
@@ -81,6 +80,7 @@ class Graph {
 
     vertex_it->second[to] = edge;
     ++edge_count_;
+
     return true;
   }
 
@@ -132,6 +132,7 @@ class Graph {
 
     std::unordered_set<V> visited;
     BFSVisitHelper(start, visit, visited);
+
     return true;
   }
 
@@ -150,17 +151,45 @@ class Graph {
 
     std::unordered_set<V> visited;
     DFSVisitHelper(start, visit, visited);
+
     return true;
+  }
+
+  std::vector<V> Sources() const {
+    std::unordered_map<V, unsigned> vertices;
+    for (const auto& vit: vertex_map_)
+      vertices[vit.first] = 0;
+
+    for (const auto& vit: vertex_map_)
+      for (const auto& eit: vit.second)
+        ++vertices[eit.first];
+
+    std::vector<V> result;
+    for (const auto& vertex: vertices)
+      if (vertex.second == 0)
+        result.push_back(vertex.first);
+
+    return result;
+  }
+
+  std::vector<V> Sinks() const {
+    std::vector<V> result;
+
+    for (const auto& vit: vertex_map_)
+      if (vit.second.empty())
+        result.push_back(vit.first);
+
+    return result;
   }
 
   std::string asAdjListString() const {
     std::string result;
 
-    for (auto& vit: vertex_map_) {
+    for (const auto& vit: vertex_map_) {
       result += std::to_string(vit.first);
       result += ": ";
 
-      for (auto& eit: vit.second) {
+      for (const auto& eit: vit.second) {
         result += "(";
         result += std::to_string(eit.first);
         result += ", ";
