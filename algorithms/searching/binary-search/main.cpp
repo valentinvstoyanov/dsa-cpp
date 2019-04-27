@@ -11,6 +11,11 @@ int main() {
   assert(BinarySearch(arr, size, 111111) == -1 && "fail");
   assert(BinarySearch<int>(nullptr, 0, 10) == -1 && "fail");
 
+  for (int i = 0; i < size; ++i)
+    assert(BinarySearchRecursive(arr, i + 1, 0, size) == i && "fail");
+  assert(BinarySearchRecursive(arr, 111111, 0, size) == -1 && "fail");
+  assert(BinarySearchRecursive<int>(nullptr, 0, 0, size) == -1 && "fail");
+
   std::cout << "Success!" << std::endl;
 
   return 0;
