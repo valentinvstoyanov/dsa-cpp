@@ -2,7 +2,7 @@
 #include "graph.h"
 
 int main() {
-  Graph<int, int> graph;
+  Graph<int, int, true> graph;
   const int size = 20;
 
   for (int i = 0; i < size; ++i) {
@@ -24,7 +24,7 @@ int main() {
   std::cout << "removing edge (" << v << ", " << u << ") " << (graph.RemoveEdge(v, u) ? "succeeded." : "failed...") << std::endl;
   std::cout << "removing edge (" << v << ", " << u << ") " << (graph.RemoveEdge(v, u) ? "succeeded." : "failed...") << std::endl;
 
-  graph = Graph<int, int>();
+  graph = Graph<int, int, true>();
   graph.AddVertex(1);
   graph.AddVertex(2);
   graph.AddVertex(3);
@@ -87,7 +87,11 @@ int main() {
   for (auto& source: sources)
     std::cout << source << " ";
 
-  std::cout << '\n';
+  std::cout << "\n\n";
+
+  auto transposed_graph = graph.Transpose();
+  std::cout << transposed_graph.asAdjacencyListString() << std::endl;
+  std::cout << graph.VertexCount() << ", " << graph.EdgeCount() << " == " << transposed_graph.VertexCount() << ", " << transposed_graph.EdgeCount() << std::endl;
 
 
   return 0;

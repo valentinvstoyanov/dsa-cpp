@@ -62,6 +62,20 @@ class Graph {
 
     return true;
   }
+
+  VertexMap TransposeVertexMap() const {
+    VertexMap transposed_vertex_map;
+
+    for (const auto& vit: vertex_map_) {
+      transposed_vertex_map.insert(std::make_pair(vit.first, EdgeMap()));
+
+      for (const auto& eit: vit.second)
+        transposed_vertex_map[eit.first][vit.first] = eit.second;
+    }
+
+    return transposed_vertex_map;
+  }
+
  public:
   bool AddVertex(const V& vertex) {
     if (vertex_map_.find(vertex) == vertex_map_.end()) {
@@ -186,6 +200,13 @@ class Graph {
         result.push_back(vit.first);
 
     return result;
+  }
+
+  Graph Transpose() const {
+    Graph<V, E, directed> transposed_graph;
+    transposed_graph.vertex_map_ = TransposeVertexMap();
+    transposed_graph.edge_count_ = edge_count_;
+    return transposed_graph;
   }
 
   const VertexMap& AdjacencyList() const {
