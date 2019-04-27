@@ -26,6 +26,7 @@ class BST {
   Node** SearchMin(Node** root) const;
   Node** Search(const T&);
 
+  void Copy(Node*& dest, Node* src) const;
   void Clear(Node*);
   void PreOrderWalk(Node*, const WalkCallback&) const;
   void InOrderWalk(Node*, const WalkCallback&) const;
@@ -69,15 +70,18 @@ BST<T>::~BST() {
 }
 
 template<typename T>
-BST<T>::BST(const BST&) {
-  //TODO
+BST<T>::BST(const BST& other)
+    : root_(nullptr) {
+  Copy(root_, other.root_);
 }
 
 template<typename T>
 BST<T>& BST<T>::operator=(const BST& other) {
   if (this != &other) {
-    //TODO
+    Clear();
+    Copy(root_, other.root_);
   }
+
   return *this;
 }
 
@@ -166,6 +170,17 @@ void BST<T>::Remove(const T& data) {
   }
 
   delete node_to_delete;
+}
+
+template<typename T>
+void BST<T>::Copy(BST::Node*& dest, BST::Node* src) const {
+  dest = nullptr;
+
+  if (src) {
+    dest = new Node(src->data_);
+    Copy(dest->left_, src->left_);
+    Copy(dest->right_, src->right_);
+  }
 }
 
 template<typename T>
