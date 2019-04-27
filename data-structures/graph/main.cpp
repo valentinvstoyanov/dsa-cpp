@@ -47,7 +47,7 @@ int main() {
   graph.AddEdge(6, 5, 1);
   graph.AddEdge(6, 7, 1);
 
-  std::cout << graph.asAdjListString() << std::endl;
+  std::cout << graph.asAdjacencyListString() << std::endl;
 
   graph.BFS([](const int& val) -> bool {
     std::cout << val << " ";

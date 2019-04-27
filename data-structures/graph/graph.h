@@ -7,13 +7,13 @@
 #include <queue>
 #include <cassert>
 
-template<typename V = int, typename E = int>
+template<typename V = int, typename E = int, bool directed = false>
 class Graph {
+ public:
   using EdgeMap = std::unordered_map<V, E>;
   using VertexMap = std::unordered_map<V, EdgeMap>;
-
   using VisitCallback = std::function<bool(const V&)>;
-
+ private:
   VertexMap vertex_map_;
   size_t edge_count_;
 
@@ -62,7 +62,6 @@ class Graph {
 
     return true;
   }
-
  public:
   bool AddVertex(const V& vertex) {
     if (vertex_map_.find(vertex) == vertex_map_.end()) {
@@ -74,11 +73,15 @@ class Graph {
   }
 
   bool AddEdge(const V& from, const V& to, const E& edge) {
-    auto vertex_it = vertex_map_.find(from);
-    if (vertex_it == vertex_map_.end() || vertex_map_.find(to) == vertex_map_.end())
+    auto from_it = vertex_map_.find(from);
+    auto to_it = vertex_map_.find(to);
+    if (from_it == vertex_map_.end() || to_it == vertex_map_.end())
       return false;
 
-    vertex_it->second[to] = edge;
+    if (!directed)
+      to_it->second[from] = edge;
+
+    from_it->second[to] = edge;
     ++edge_count_;
 
     return true;
@@ -105,11 +108,12 @@ class Graph {
   }
 
   bool RemoveEdge(const V& from, const V& to) {
-    auto vertex_it = vertex_map_.find(from);
-    if (vertex_it == vertex_map_.end() || vertex_map_.find(to) == vertex_map_.end())
+    auto from_it = vertex_map_.find(from);
+    auto to_it = vertex_map_.find(to);
+    if (from_it == vertex_map_.end() || to_it == vertex_map_.end())
       return false;
 
-    if (vertex_it->second.erase(to) != 0) {
+    if ((!directed && from_it->second.erase(to) != 0 && to_it->second.erase(from) != 0) || from_it->second.erase(to) != 0) {
       --edge_count_;
       return true;
     }
@@ -156,6 +160,7 @@ class Graph {
   }
 
   std::vector<V> Sources() const {
+    assert(directed && "Cannot retrieve sources from undirected graph.");
     std::unordered_map<V, unsigned> vertices;
     for (const auto& vit: vertex_map_)
       vertices[vit.first] = 0;
@@ -173,6 +178,7 @@ class Graph {
   }
 
   std::vector<V> Sinks() const {
+    assert(directed && "Cannot retrieve sinks from undirected graph.");
     std::vector<V> result;
 
     for (const auto& vit: vertex_map_)
@@ -182,7 +188,27 @@ class Graph {
     return result;
   }
 
-  std::string asAdjListString() const {
+  const VertexMap& AdjacencyList() const {
+    return vertex_map_;
+  }
+
+  size_t VertexCount() const {
+    return vertex_map_.size();
+  }
+
+  size_t EdgeCount() const {
+    return edge_count_;
+  }
+
+  bool IsDirected() const {
+    return directed;
+  }
+
+  bool IsUndirected() const {
+    return !directed;
+  }
+
+  std::string asAdjacencyListString() const {
     std::string result;
 
     for (const auto& vit: vertex_map_) {
