@@ -173,20 +173,39 @@ class Graph {
     return true;
   }
 
-  std::vector<V> Sinks() const {
-    assert(directed && "Cannot retrieve sinks from undirected graph.");
-    std::unordered_map<V, unsigned> vertices;
+  std::unordered_map<V, unsigned> OutDegrees() const {
+    assert(directed && "Cannot retrieve out-degrees from undirected graph.");
+    std::unordered_map<V, unsigned> out_degree_map;
+
     for (const auto& vit: vertex_map_)
-      vertices[vit.first] = 0;
+        out_degree_map[vit.first] = vit.second.size();
+
+    return out_degree_map;
+  }
+
+  std::unordered_map<V, unsigned> InDegrees() const {
+    assert(directed && "Cannot retrieve in-degrees from undirected graph.");
+    std::unordered_map<V, unsigned> in_degree_map;
+
+    for (const auto& vit: vertex_map_)
+      in_degree_map[vit.first] = 0;
 
     for (const auto& vit: vertex_map_)
       for (const auto& eit: vit.second)
-        ++vertices[eit.first];
+        ++in_degree_map[eit.first];
+
+
+    return in_degree_map;
+  }
+
+  std::vector<V> Sinks() const {
+    assert(directed && "Cannot retrieve sinks from undirected graph.");
+    std::unordered_map<V, unsigned> in_degree_map = InDegrees();
 
     std::vector<V> result;
-    for (const auto& vertex: vertices)
-      if (vertex.second == 0)
-        result.push_back(vertex.first);
+    for (const auto& pair: in_degree_map)
+      if (pair.second == 0)
+        result.push_back(pair.first);
 
     return result;
   }
