@@ -17,52 +17,6 @@ class Graph {
   VertexMap vertex_map_;
   size_t edge_count_;
 
-  bool BFSVisitHelper(const V& start, const VisitCallback& visit, std::unordered_set<V>& visited) const {
-    std::queue<V> q;
-    q.push(start);
-    visited.insert(start);
-
-    while (!q.empty()) {
-      const V current = q.front();
-      q.pop();
-
-      if (!visit(current))
-        return true;
-
-      const EdgeMap& adj = vertex_map_.find(current)->second;
-      for (const auto& element: adj) {
-        const V& vertex = element.first;
-
-        if (visited.find(vertex) == visited.end()) {
-          q.push(vertex);
-          visited.insert(vertex);
-        }
-      }
-    }
-
-    return true;
-  }
-
-  bool DFSVisitHelper(const V& start, const VisitCallback& visit, std::unordered_set<V>& visited) const {
-    if (visited.find(start) != visited.end())
-      return true;
-
-    visited.insert(start);
-    if (!visit(start))
-      return false;
-
-    const EdgeMap& adj = vertex_map_.find(start)->second;
-    for (const auto& element: adj) {
-      const V& vertex = element.first;
-
-      if (visited.find(vertex) == visited.end())
-        if (!DFSVisitHelper(vertex, visit, visited))
-          return false;
-    }
-
-    return true;
-  }
-
   VertexMap TransposeVertexMap() const {
     VertexMap transposed_vertex_map;
 
@@ -86,7 +40,7 @@ class Graph {
     return false;
   }
 
-  bool AddEdge(const V& from, const V& to, const E& edge) {
+  bool AddEdge(const V& from, const V& to, const E& edge = 1) {
     auto from_it = vertex_map_.find(from);
     auto to_it = vertex_map_.find(to);
     if (from_it == vertex_map_.end() || to_it == vertex_map_.end())
@@ -135,12 +89,58 @@ class Graph {
     return false;
   }
 
+  bool BFSVisit(const V& start, const VisitCallback& visit, std::unordered_set<V>& visited) const {
+    std::queue<V> q;
+    q.push(start);
+    visited.insert(start);
+
+    while (!q.empty()) {
+      const V current = q.front();
+      q.pop();
+
+      if (!visit(current))
+        return true;
+
+      const EdgeMap& adj = vertex_map_.find(current)->second;
+      for (const auto& element: adj) {
+        const V& vertex = element.first;
+
+        if (visited.find(vertex) == visited.end()) {
+          q.push(vertex);
+          visited.insert(vertex);
+        }
+      }
+    }
+
+    return true;
+  }
+
+  bool DFSVisit(const V& start, const VisitCallback& visit, std::unordered_set<V>& visited) const {
+    if (visited.find(start) != visited.end())
+      return true;
+
+    visited.insert(start);
+    if (!visit(start))
+      return false;
+
+    const EdgeMap& adj = vertex_map_.find(start)->second;
+    for (const auto& element: adj) {
+      const V& vertex = element.first;
+
+      if (visited.find(vertex) == visited.end())
+        if (!DFSVisit(vertex, visit, visited))
+          return false;
+    }
+
+    return true;
+  }
+
   void BFS(const VisitCallback& visit) const {
     std::unordered_set<V> visited;
 
     for (const auto& vit: vertex_map_)
       if (visited.find(vit.first) == visited.end())
-        if (!BFSVisitHelper(vit.first, visit, visited))
+        if (!BFSVisit(vit.first, visit, visited))
           return;
   }
 
@@ -149,7 +149,7 @@ class Graph {
       return false;
 
     std::unordered_set<V> visited;
-    BFSVisitHelper(start, visit, visited);
+    BFSVisit(start, visit, visited);
 
     return true;
   }
@@ -159,7 +159,7 @@ class Graph {
 
     for (const auto& vit: vertex_map_)
       if (visited.find(vit.first) == visited.end())
-        if (!DFSVisitHelper(vit.first, visit, visited))
+        if (!DFSVisit(vit.first, visit, visited))
           return;
   }
 
@@ -168,13 +168,13 @@ class Graph {
       return false;
 
     std::unordered_set<V> visited;
-    DFSVisitHelper(start, visit, visited);
+    DFSVisit(start, visit, visited);
 
     return true;
   }
 
-  std::vector<V> Sources() const {
-    assert(directed && "Cannot retrieve sources from undirected graph.");
+  std::vector<V> Sinks() const {
+    assert(directed && "Cannot retrieve sinks from undirected graph.");
     std::unordered_map<V, unsigned> vertices;
     for (const auto& vit: vertex_map_)
       vertices[vit.first] = 0;
@@ -191,8 +191,8 @@ class Graph {
     return result;
   }
 
-  std::vector<V> Sinks() const {
-    assert(directed && "Cannot retrieve sinks from undirected graph.");
+  std::vector<V> Sources() const {
+    assert(directed && "Cannot retrieve sources from undirected graph.");
     std::vector<V> result;
 
     for (const auto& vit: vertex_map_)
