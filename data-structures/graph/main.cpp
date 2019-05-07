@@ -47,7 +47,7 @@ int main() {
   graph.AddEdge(6, 5, 1);
   graph.AddEdge(6, 7, 1);
 
-  std::cout << graph.asAdjacencyListString() << std::endl;
+  std::cout << graph.AsAdjacencyListString() << std::endl;
 
   graph.BFS([](const int& val) -> bool {
     std::cout << val << " ";
@@ -90,9 +90,13 @@ int main() {
   std::cout << "\n\n";
 
   auto transposed_graph = graph.Transpose();
-  std::cout << transposed_graph.asAdjacencyListString() << std::endl;
+  std::cout << transposed_graph.AsAdjacencyListString() << std::endl;
   std::cout << graph.VertexCount() << ", " << graph.EdgeCount() << " == " << transposed_graph.VertexCount() << ", " << transposed_graph.EdgeCount() << std::endl;
 
+  const auto& adjs = graph.Adj(1);
+  for (const auto& adj: adjs)
+    std::cout << adj.first << " " << adj.second << " ";
+  std::cout << std::endl;
 
   return 0;
 }

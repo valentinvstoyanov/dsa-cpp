@@ -213,6 +213,12 @@ class Graph {
     return vertex_map_;
   }
 
+  const EdgeMap& Adj(const V& vertex) const {
+    auto it = vertex_map_.find(vertex);
+    assert(it != vertex_map_.end() && "Adj called with non-existing vertex.");
+    return it->second;
+  }
+
   size_t VertexCount() const {
     return vertex_map_.size();
   }
@@ -229,7 +235,7 @@ class Graph {
     return !directed;
   }
 
-  std::string asAdjacencyListString() const {
+  std::string AsAdjacencyListString() const {
     std::string result;
 
     for (const auto& vit: vertex_map_) {
