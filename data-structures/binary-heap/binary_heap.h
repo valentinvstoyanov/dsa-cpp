@@ -17,15 +17,17 @@ class BinaryHeap {
   explicit BinaryHeap(Comparator = std::less<T>());
   explicit BinaryHeap(std::vector<T>, Comparator = std::less<T>());
 
-  size_t Left(size_t) const;
-  size_t Right(size_t) const;
-  size_t Parent(size_t) const;
-  size_t ParentN(size_t, size_t) const;
+  static size_t Left(size_t);
+  static size_t Right(size_t);
+  static size_t Parent(size_t);
+  static size_t ParentN(size_t, size_t);
+
+  static void Heapify(T*, size_t, size_t, Comparator = std::less<T>());
+  static void BuildHeap(T*, size_t, Comparator = std::less<T>());
 
   bool IsEmpty() const;
   size_t Size() const;
 
-  void Heapify(size_t);
   void Insert(const T&);
   const T& Top() const;
   T Extract();
@@ -36,28 +38,56 @@ BinaryHeap<T, Comparator>::BinaryHeap(Comparator comparator) : comparator_(compa
 
 template<typename T, typename Comparator>
 BinaryHeap<T, Comparator>::BinaryHeap(std::vector<T> arr, Comparator comparator) : arr_(arr), comparator_(comparator) {
-  for (int i = arr_.size() / 2; i >= 0; --i)
-    Heapify(i);
+  BuildHeap(arr_.data(), arr.size(), comparator_);
 }
 
 template<typename T, typename Comparator>
-size_t BinaryHeap<T, Comparator>::Left(size_t i) const {
+size_t BinaryHeap<T, Comparator>::Left(size_t i) {
   return 2 * i + 1;
 }
 
 template<typename T, typename Comparator>
-size_t BinaryHeap<T, Comparator>::Right(size_t i) const {
+size_t BinaryHeap<T, Comparator>::Right(size_t i) {
   return 2 * i + 2;
 }
 
 template<typename T, typename Comparator>
-size_t BinaryHeap<T, Comparator>::Parent(size_t i) const {
+size_t BinaryHeap<T, Comparator>::Parent(size_t i) {
   return (i - 1) / 2;
 }
 
 template<typename T, typename Comparator>
-size_t BinaryHeap<T, Comparator>::ParentN(size_t i, size_t n) const {
+size_t BinaryHeap<T, Comparator>::ParentN(size_t i, size_t n) {
   return i == 0 ? 0 : Parent(ParentN(i, n - 1));
+}
+
+template<typename T, typename Comparator>
+void BinaryHeap<T, Comparator>::Heapify(T* arr, size_t size, size_t i, Comparator before) {
+  if (!arr || size == 0)
+    return;
+
+  assert(i < size && "Heapify called with i out of bounds.");
+
+  size_t largest = i;
+  size_t left = Left(i);
+  size_t right = Right(i);
+
+  if (left < size && before(arr[largest], arr[left]))
+    largest = left;
+
+  if (right < size && before(arr[largest], arr[right]))
+    largest = right;
+
+  if (largest != i) {
+    std::swap(arr[i], arr[largest]);
+    Heapify(arr, size, largest, before);
+  }
+}
+
+template<typename T, typename Comparator>
+void BinaryHeap<T, Comparator>::BuildHeap(T* arr, size_t size, Comparator before) {
+  for (long i = size / 2 - 1; i >= 0; --i)
+    Heapify(arr, size, static_cast<size_t>(i), before);
 }
 
 template<typename T, typename Comparator>
@@ -68,29 +98,6 @@ bool BinaryHeap<T, Comparator>::IsEmpty() const {
 template<typename T, typename Comparator>
 size_t BinaryHeap<T, Comparator>::Size() const {
   return arr_.size();
-}
-
-template<typename T, typename Comparator>
-void BinaryHeap<T, Comparator>::Heapify(size_t i) {
-  if (IsEmpty())
-    return;
-
-  assert(i < arr_.size() && "Heapify called with index out of bounds.");
-
-  size_t left = Left(i);
-  size_t right = Right(i);
-  size_t largest = i;
-
-  if (left < arr_.size() && comparator_(arr_[largest], arr_[left]))
-    largest = left;
-
-  if (right < arr_.size() && comparator_(arr_[largest], arr_[right]))
-    largest = right;
-
-  if (largest != i) {
-    std::swap(arr_[i], arr_[largest]);
-    Heapify(largest);
-  }
 }
 
 template<typename T, typename Comparator>
@@ -121,7 +128,7 @@ T BinaryHeap<T, Comparator>::Extract() {
   T top = arr_.front();
   arr_.front() = arr_.back();
   arr_.pop_back();
-  Heapify(0);
+  Heapify(arr_.data(), arr_.size(), 0, comparator_);
   return top;
 }
 
