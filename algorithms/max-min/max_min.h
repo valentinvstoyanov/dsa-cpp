@@ -6,6 +6,30 @@
 #include <utility>
 
 template<typename T>
+T Max(T* arr, size_t size) {
+  if (!arr || size == 0)
+    return std::numeric_limits<T>::min();
+
+  size_t max_idx = 0;
+  for (size_t i = 0; i < size; ++i)
+    if (arr[i] > arr[max_idx]) max_idx = i;
+
+  return arr[max_idx];
+}
+
+template<typename T>
+T Min(T* arr, size_t size) {
+  if (!arr || size == 0)
+    return std::numeric_limits<T>::max();
+
+  size_t min_idx = 0;
+  for (size_t i = 0; i < size; ++i)
+    if (arr[i] < arr[min_idx]) min_idx = i;
+
+  return arr[min_idx];
+}
+
+template<typename T>
 std::pair<T, T> MaxMin(T* arr, size_t size) {
   if (!arr || size == 0)
     return std::make_pair(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
