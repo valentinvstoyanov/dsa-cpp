@@ -20,6 +20,9 @@ int main() {
   };
 
   BFS<int, int, false>(g, 2, cb); printf("\n");
+  BFS<int, int, false>(g, 1); printf("\n");
+  BFS<int, int, false>(g); printf("\n");
+  BFS<int, int, false>(g, cb); printf("\n");
 
   return 0;
 }

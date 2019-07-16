@@ -33,7 +33,7 @@ template<typename V, typename E, bool directed>
 BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const V& start, const BFSCallback<V>& callback, BFSDataMap<V, E>& data) {
   Queue<V> queue;
   queue.Enqueue(start);
-  callback(start, WHITE);
+  if (callback) callback(start, WHITE);
   data[start].color = Color::GRAY;
   data[start].dist = E(0);
 
@@ -60,13 +60,13 @@ BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const V& start, const B
 }
 
 template<typename V, typename E, bool directed>
-BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const V& start, const BFSCallback<V>& callback) {
+BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const V& start, const BFSCallback<V>& callback = nullptr) {
   auto data = InitBFSDataMap(graph);
   return BFS(graph, start, callback, data);
 }
 
 template<typename V, typename E, bool directed>
-BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const BFSCallback<V>& callback) {
+BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const BFSCallback<V>& callback = nullptr) {
   BFSDataMap<V, E> data = InitBFSDataMap(graph);
   for (const std::pair<V, BFSData<V, E>>& pair: data)
     if (pair.second.color == WHITE)
