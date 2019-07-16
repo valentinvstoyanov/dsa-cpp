@@ -6,6 +6,9 @@
 #include <unordered_set>
 #include <queue>
 #include <cassert>
+#include <limits>
+
+enum Color { BLACK, WHITE, GRAY };
 
 template<typename V = int, typename E = int, bool directed = false>
 class Graph {
@@ -81,7 +84,8 @@ class Graph {
     if (from_it == vertex_map_.end() || to_it == vertex_map_.end())
       return false;
 
-    if ((!directed && from_it->second.erase(to) != 0 && to_it->second.erase(from) != 0) || from_it->second.erase(to) != 0) {
+    if ((!directed && from_it->second.erase(to) != 0 && to_it->second.erase(from) != 0)
+        || from_it->second.erase(to) != 0) {
       --edge_count_;
       return true;
     }
@@ -178,7 +182,7 @@ class Graph {
     std::unordered_map<V, unsigned> out_degree_map;
 
     for (const auto& vit: vertex_map_)
-        out_degree_map[vit.first] = vit.second.size();
+      out_degree_map[vit.first] = vit.second.size();
 
     return out_degree_map;
   }
@@ -193,7 +197,6 @@ class Graph {
     for (const auto& vit: vertex_map_)
       for (const auto& eit: vit.second)
         ++in_degree_map[eit.first];
-
 
     return in_degree_map;
   }
