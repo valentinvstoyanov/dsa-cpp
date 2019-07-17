@@ -7,11 +7,11 @@
 template<typename V, typename E>
 struct BFSData {
  public:
-  V* predecessor;
+  V predecessor;
   E dist;
   Color color;
 
-  explicit BFSData(V* pred = nullptr, const E& dist = std::numeric_limits<E>::max(), Color col = WHITE)
+  explicit BFSData(V pred = V(-1), const E& dist = std::numeric_limits<E>::max(), Color col = WHITE)
       : predecessor(pred), dist(dist), color(col) {}
 };
 
@@ -48,7 +48,7 @@ BFSDataMap<V, E> BFS(const Graph<V, E, directed>& graph, const V& start, const B
       if (data_y.color == Color::WHITE) {
         data_y.color = Color::GRAY;
         data_y.dist = data[x].dist + E(1);
-        data_y.predecessor = &x;
+        data_y.predecessor = x;
         queue.Enqueue(y);
       }
     }
