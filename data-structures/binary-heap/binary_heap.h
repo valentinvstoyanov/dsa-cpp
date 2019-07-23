@@ -1,7 +1,3 @@
-//
-// Created by valentinvstoyanov on 14.06.19.
-//
-
 #ifndef BINARY_HEAP_BINARY_HEAP_H
 #define BINARY_HEAP_BINARY_HEAP_H
 
@@ -14,8 +10,8 @@ class BinaryHeap {
   std::vector<T> arr_;
   Comparator comparator_;
  public:
-  explicit BinaryHeap(Comparator = std::less<T>());
-  explicit BinaryHeap(std::vector<T>, Comparator = std::less<T>());
+  explicit BinaryHeap(Comparator = Comparator());
+  explicit BinaryHeap(std::vector<T>, Comparator = Comparator());
 
   static size_t Left(size_t);
   static size_t Right(size_t);
@@ -28,6 +24,8 @@ class BinaryHeap {
   bool IsEmpty() const;
   size_t Size() const;
 
+  void UpdateKey(size_t index, const T& key);
+  void UpdateTopKey(const T& value);
   void Insert(const T&);
   const T& Top() const;
   T Extract();
@@ -37,7 +35,8 @@ template<typename T, typename Comparator>
 BinaryHeap<T, Comparator>::BinaryHeap(Comparator comparator) : comparator_(comparator) {}
 
 template<typename T, typename Comparator>
-BinaryHeap<T, Comparator>::BinaryHeap(std::vector<T> arr, Comparator comparator) : arr_(arr), comparator_(comparator) {
+BinaryHeap<T, Comparator>::BinaryHeap(std::vector<T> arr, Comparator comparator)
+    : arr_(arr), comparator_(comparator) {
   BuildHeap(arr_.data(), arr.size(), comparator_);
 }
 
@@ -98,6 +97,30 @@ bool BinaryHeap<T, Comparator>::IsEmpty() const {
 template<typename T, typename Comparator>
 size_t BinaryHeap<T, Comparator>::Size() const {
   return arr_.size();
+}
+
+template<typename T, typename Comparator>
+void BinaryHeap<T, Comparator>::UpdateKey(size_t index, const T& key) {
+  assert(index < Size() && "Update key index out of bounds.");
+  assert(!IsEmpty() && "Update key called on empty binary heap.");
+  assert(!comparator_(key, Top()) && "Cannot decrease key of max heap.");
+
+  arr_[index] = key;
+  while (index > 0) {
+    size_t parent_i = Parent(index);
+
+    if (comparator_(arr_[parent_i], arr_[index])) {
+      std::swap(arr_[parent_i], arr_[index]);
+      index = parent_i;
+    } else {
+      break;
+    }
+  }
+}
+
+template<typename T, typename Comparator>
+void BinaryHeap<T, Comparator>::UpdateTopKey(const T& key) {
+  UpdateKey(0, key);
 }
 
 template<typename T, typename Comparator>

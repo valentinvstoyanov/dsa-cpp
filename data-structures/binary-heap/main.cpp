@@ -23,8 +23,22 @@ int main() {
   std::cout << "Insert: " << insert_val2 << "\n";
   h1.Insert(insert_val2);
 
+  std::cout << "Before update Top: " << h1.Top() << "\n";
+  h1.UpdateKey(0, 1001);
+  std::cout << "After update Top: " << h1.Top() << "\n";
+
+  std::cout << "Before update(last) Top: " << h1.Top() << "\n";
+  h1.UpdateKey(h1.Size() - 1, 10002);
+  std::cout << "After update(last) Top: " << h1.Top() << "\n";
+
   while (!h1.IsEmpty())
     std::cout << "Extract: " << h1.Extract() << "\n";
+
+  BinaryHeap<int, std::greater<>> h2({5, 4, 3, 2});
+  std::cout << "Top: " << h2.Top() << "\n";
+  h2.UpdateKey(0, 2);
+  std::cout << "Top: " << h2.Top() << "\n";
+
 
   return 0;
 }
