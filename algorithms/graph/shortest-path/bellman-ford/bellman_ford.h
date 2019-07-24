@@ -18,8 +18,10 @@ std::pair<std::unordered_map<V, V>, std::unordered_map<V, E>> BellmanFord(const 
 
   for (int i = 2; i < graph.VertexCount(); ++i) {
     for(const auto& x: graph.AdjacencyList()) {
+      if (dist[x.first] == inf)
+        continue;
       for(const auto& y: x.second) {
-        E new_dist = dist[x.first] == inf ? inf : dist[x.first] + y.second;
+        E new_dist = dist[x.first] + y.second;
         if (new_dist < dist[y.first]) {
           dist[y.first] = new_dist;
           parent[y.first] = x.first;
