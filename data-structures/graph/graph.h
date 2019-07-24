@@ -34,6 +34,16 @@ class Graph {
   }
 
  public:
+  Graph() : edge_count_(0) {}
+
+  Graph(V start, V end, bool inclusive = true) : edge_count_(0) {
+    while (start < end) {
+      AddVertex(start);
+      ++start;
+    }
+    if (inclusive) AddVertex(start);
+  }
+
   bool AddVertex(const V& vertex) {
     if (vertex_map_.find(vertex) == vertex_map_.end()) {
       vertex_map_.insert(std::make_pair(vertex, EdgeMap()));

@@ -98,5 +98,8 @@ int main() {
     std::cout << adj.first << " " << adj.second << " ";
   std::cout << std::endl;
 
+  Graph<int, int> g(0, 6);
+  printf("VC: %d\n", g.VertexCount());
+
   return 0;
 }
