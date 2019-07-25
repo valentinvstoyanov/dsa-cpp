@@ -23,6 +23,7 @@ Implementation of some data structures and algorithms
     - Merge sort
     - Quick sort
     - Counting sort
+    - Radix sort
   - Searching  
     - Linear search
     - Binary search
@@ -50,7 +51,6 @@ Implementation of some data structures and algorithms
 ***  
 
 ***TODO***(optimistically):
-- Radix sort
 - Add more tests
 - Self-balancing BSTs
 - Linear algebra
