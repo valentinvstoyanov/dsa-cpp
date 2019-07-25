@@ -16,7 +16,7 @@ std::pair<std::unordered_map<V, V>, std::unordered_map<V, E>> BellmanFord(const 
   }
   dist[start] = E(0);
 
-  for (int i = 2; i < graph.VertexCount(); ++i) {
+  for (int i = 1; i < graph.VertexCount(); ++i) {
     for(const auto& x: graph.AdjacencyList()) {
       if (dist[x.first] == inf)
         continue;
