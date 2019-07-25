@@ -59,5 +59,6 @@ Implementation of some data structures and algorithms
 - Cycle detection
 - Edge classification
 - DP
+- More sorting algorithms like Cocktail sort, Shell sort etc.
  
   
