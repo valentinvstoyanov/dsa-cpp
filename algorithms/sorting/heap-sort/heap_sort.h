@@ -14,7 +14,7 @@ void HeapSort(T* arr, size_t size) {
 
   BinaryHeap<T>::BuildHeap(arr, size);
 
-  for (long i = size - 1; i >= 0; --i) {
+  for (long i = size - 1; i > 0; --i) {
     std::swap(arr[0], arr[i]);
     BinaryHeap<T>::Heapify(arr, i, 0);
   }
