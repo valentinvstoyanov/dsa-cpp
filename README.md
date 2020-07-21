@@ -53,12 +53,14 @@ Implementation of some data structures and algorithms
 ***TODO***(optimistically):
 - Add more tests
 - Self-balancing BSTs
-- Linear algebra
+- Linear algebra(with adjustable field)
 - Hash map with linear probing
 - A*
 - Cycle detection
 - Edge classification
 - DP
+- Median in O(n) time
+- PICK algorithm
 - More sorting algorithms like Cocktail sort, Shell sort etc.
  
   
